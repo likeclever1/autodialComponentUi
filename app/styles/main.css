@@ -17,3 +17,9 @@ dt, dd {
     display: inline-block;
 }
 
+dd.empty {
+    min-width: 100px;
+    border: 1px solid red;
+    text-align: left;
+}
+

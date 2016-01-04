@@ -48,54 +48,65 @@
 
     <!-- Template for select type item -->
     <script type="text/template" id="title-list">
-        <% for(var i = 0; i < items.length; i++) { %>
-            <div class="list-titles-item">
-                <div class="inline-block">
-                    <%-items[i].title%>
-                </div>
+        <div class="chooseFields">
+            <% for(var i = 0; i < items.length; i++) { %>
+                <div class="list-titles-item">
+                    <div class="inline-block">
+                        <%-items[i].title%>
+                    </div>
 
-                <div class="inline-block">
-                    <select class="field-select" data-field="<%-items[i].id%>" data-title="<%-items[i].title%>">
-                        <option>Select your option</option>
-                        <%for(var j = 0; j < options.length; j++) { %>
-                            <option data-index="<%-j%>"><%-options[j]%></option>
-                        <% } %>
-                    </select>
-                </div>
+                    <div class="inline-block">
+                        <select class="field-select" data-field="<%-items[i].id%>" data-title="<%-items[i].title%>">
+                            <option>Select your option</option>
+                            <%for(var j = 0; j < options.length; j++) { %>
+                                <option data-index="<%-j%>"><%-options[j]%></option>
+                            <% } %>
+                        </select>
+                    </div>
 
-            </div>
-        <% } %>
+                </div>
+            <% } %>
+
+            <button id="renderTable" class="btn btn-primary" type="button" >Render Table</button>
+        </div>
     </script>
 
     <!-- Template for table -->
     <script type="text/template" id="table-list">
-        <table id="customUserTableFromCSV" class="table" data-component="table-custom">
-            <thead>
-                <tr>
-                    <%for(var i = 0; i < title.length; i++) { %>
-                        <th><%-title[i].title%></th>
-                    <% } %>
-                    <th>
-                        Edit/Remove
-                    </th>
-                </tr>
-            </thead>
+        <div data-component="table-custom">
+            <div class="table-custom__navigation">
+                <button class="btn btn-primary" data-table-custom="add-row" data-component="dialog" type="button">Add</button>
+                <button class="btn btn-primary" data-table-custom="submit" type="button">Submit</button>
+            </div>
 
-            <tbody>
-                <%for(var i = 0; i < data.length; i++) { %>
-                    <tr data-index="<%-i%>">
-                        <%for(var value in data[i]) { %>
-                            <%if(value === "index") continue;%>
-                            <td><%-data[i][value]%></td>
+            <table id="customUserTableFromCSV" class="table" data-component="table-custom">
+                <thead>
+                    <tr>
+                        <%for(var i = 0; i < title.length; i++) { %>
+                            <th data-table-custom="<%-title[i].id%>"><%-title[i].title%></th>
                         <% } %>
-                        <td>
-                            <button class="btn btn-primary" data-table-custom="edit-row" data-component="dialog" type="button">Edit</button>
-                            <button class="btn btn-primary" data-table-custom="delete-row" type="button">Remove</button>
-                        </td>
+                        <th>
+                            Edit/Remove
+                        </th>
                     </tr>
-                <% } %>
-            </tbody>
-        </table>
+                </thead>
+
+                <tbody>
+                    <%for(var i = 0; i < data.length; i++) { %>
+                        <tr data-index="<%-i%>">
+                            <%for(var value in data[i]) { %>
+                                <%if(value === "index") continue;%>
+                                <td><%-data[i][value]%></td>
+                            <% } %>
+                            <td>
+                                <button class="btn btn-primary" data-table-custom="edit-row" data-component="dialog" type="button">Edit</button>
+                                <button class="btn btn-primary" data-table-custom="delete-row" type="button">Delete</button>
+                            </td>
+                        </tr>
+                    <% } %>
+                </tbody>
+            </table>
+        </div>
 
     </script>
 
@@ -109,7 +120,7 @@
             <% } %>
             <td>
                 <button class="btn btn-primary" data-table-custom="edit-row" data-component="dialog" type="button">Edit</button>
-                <button class="btn btn-primary" data-table-custom="delete-row" type="button">Remove</button>
+                <button class="btn btn-primary" data-table-custom="delete-row" type="button">Delete</button>
             </td>
         </tr>
         <% } %>
@@ -119,11 +130,15 @@
     <script type="text/template" id="dialog-edit-row">
         <h3>Edit Row Data</h3>
 
-        <dl>
+        <dl id="row-content">
         <%for(var i = 0; i < data.length; i++) {%>
             <%for(var value in data[i]) { %>
                 <dt><%-value%></dt>
+                <%if(index === "newString") {%>
+                <dd class="empty" contenteditable="true"></dd>
+                <%} else {%>
                 <dd contenteditable="true"><%-data[i][value]%></dd>
+                <% } %>
                 <br>
             <% } %>
         <% } %>
@@ -135,85 +150,14 @@
     <div data-component="userUploadCSVFile">
         <label for="uploadFile">Add new list users</label>
         <input type="file" name="uploadFile" id="uploadFile"/>
-
-        <br/>
-
-        <div class="btn-group">
-            <button id="renderTable" class="btn btn-primary" type="button" >Render Table</button>
-            <button  id="submitData" class="btn btn-primary" type="button">Submit</button>
-        </div>
-
-        <br/>
-
     </div>
-
-    <table class="table" data-component="table-custom">
-        <thead>
-        <tr>
-            <th>Имя</th>
-            <th>Фамилия</th>
-            <th>Edit/Remove</th>
-        </tr>
-        </thead>
-
-        <tbody>
-            <tr data-index="0">
-                <td>Юрий</td>
-                <td>Березовский</td>
-                <td>
-                    <button class="btn btn-primary" data-table-custom="edit-row" data-component="dialog" type="button">Edit</button>
-                    <button id="lol" class="btn btn-primary" data-table-custom="delete-row" type="button">Delete</button>
-                </td>
-            </tr>
-        </tbody>
-    </table>
-
+    <!-- end userUploadCSVFile -->
 </div>
 
 <script src="scripts/parseCSVFile.js"></script>
 <script src="scripts/table-custom.js"></script>
 <script src="scripts/dialog.js"></script>
+<script src="scripts/main.js"></script>
 
-<script type="text/javascript">
-    "use strict";
-    let inst = new addCSVList({
-        "componentRoot": document.querySelector("[data-component='userUploadCSVFile']"),
-        "btnFile": document.getElementById("uploadFile"),
-        "btnRenderTable": document.getElementById("renderTable"),
-        "btnSubmit": document.getElementById("submitData"),
-        "typeFields": [
-            {
-                "id": "name",
-                "title": "Имя"
-            },
-            {
-                "id": "lname",
-                "title": "Фамилия"
-            },
-            {
-                "id": "email",
-                "title": "Почтовый адресс"
-            },
-            {
-                "id": "index",
-                "title": "Индекс"
-            },
-            {
-                "id": "phoneNumber",
-                "title": "Номер Телефона"
-            }
-        ]
-    });
-
-    let customTbl = new TableCustom();
-
-    let dialog = new Dialog(
-        {
-            "component": "dialog",
-            "templateId": "dialog-edit-row"
-        }
-    );
-</script>
-<!-- Built with love using Web Starter Kit -->
 </body>
 </html>

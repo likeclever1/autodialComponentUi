@@ -23,8 +23,7 @@ class addCSVList {
          * Event Listeners
          */
         this._btnFile.addEventListener('change', this._parseCSV.bind(this));
-        this._btnSubmit.addEventListener('click', this._submitData.bind(this));
-        this._btnRenderTable.addEventListener('click', this._renderTable.bind(this));
+        this._componentRoot.addEventListener('click', this._eventHandler.bind(this));
 
         /**
          * Config
@@ -79,6 +78,11 @@ class addCSVList {
         this._componentRoot
             .insertAdjacentHTML('beforeEnd', titleList({items: self._typeFields, options: self._inputData[0]}));
     }
+    _eventHandler(event) {
+        if(event.target.id === "renderTable") {
+            this._renderTable(event);
+        }
+    }
     /**
      * Render table with data from csv file
      */
@@ -101,6 +105,11 @@ class addCSVList {
         self._componentRoot
             .insertAdjacentHTML("beforeEnd", tableList({title: self._userDataStyle, data: self._correctData}));
 
+        window.customTbl = new TableCustom({
+            url: "/server.js"
+        });
+
+        this._componentRoot.removeChild(this._componentRoot.querySelector(".chooseFields"));
     }
 
     _updateData(){
@@ -154,27 +163,5 @@ class addCSVList {
                 this._correctData.push(item);
             }
         }
-        console.log(this._correctData);
-    }
-
-    /**
-     * Submit data to server
-     */
-    _submitData(event) {
-        let xhr = new XMLHttpRequest();
-        let data = {data: JSON.stringify(this._correctData)};
-
-        xhr.open("POST", this._config.url, true);
-
-        xhr.setRequestHeader('Content-type', 'application/json; charset=utf-8');
-
-        // ajax handler
-        xhr.onreadystatechange = function() {
-            if (this.readyState != 4) return;
-
-            alert( this.responseText );
-        };
-
-        xhr.send(data);
     }
 }
