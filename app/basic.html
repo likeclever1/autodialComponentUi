@@ -42,9 +42,10 @@
 <div class="container">
 
     <!-- Template for select type item -->
-    <script id="entry-template" type="text/x-handlebars-template">
+    <script id="title-list-tpl" type="text/x-handlebars-template">
         <div class="chooseFields">
-            {{#each items}}
+
+            {{#each data}}
             <div class="list-titles-item">
                 <div class="inline-block">
                     {{title}}
@@ -53,9 +54,8 @@
                 <div class="inline-block">
                     <select class="field-select" data-field="{{id}}" data-title="{{title}}">
                         <option>Select your option</option>
-                        <%for(var j = 0; j < options.length; j++) { %>
-                        {{#each options}}
-                        <option>{{this}}</option>
+                        {{#each ../options}}
+                            <option data-index="{{@index}}">{{this}}</option>
                         {{/each}}
                     </select>
                 </div>

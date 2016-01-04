@@ -34,3 +34,24 @@ let dialog = new Dialog(
         "templateId": "dialog-edit-row"
     }
 );
+
+
+let theTemplateScript = document.getElementById("title-list-handlebars").innerHTML.trim();
+let theTemplate = Handlebars.compile(theTemplateScript);
+
+var items = {
+    data: [
+        {
+            "id"   : "name",
+            "title": "Имя",
+            "options": ["Имя", "Индекс", "Фамилия"]
+        },
+        {
+            "id"   : "lname",
+            "title": "Фамилия",
+            "options": ["Имя", "Индекс", "Фамилия"]
+        },
+    ],
+}
+var theCompiledHtml = theTemplate(items);
+
