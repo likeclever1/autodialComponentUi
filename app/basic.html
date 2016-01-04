@@ -31,13 +31,8 @@
     <!-- Color the status bar on mobile devices -->
     <meta name="theme-color" content="#2F3BA2">
 
-    <!-- SEO: If your mobile URL is different from the desktop URL, add a canonical link to the desktop page https://developers.google.com/webmasters/smartphone-sites/feature-phones -->
-    <!--
-    <link rel="canonical" href="http://www.example.com/">
-    -->
-
     <script src="https://cdnjs.cloudflare.com/ajax/libs/lodash.js/3.2.0/lodash.js"></script>
-
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/handlebars.js/4.0.5/handlebars.js"></script>
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.6/css/bootstrap.css"/>
     <link rel="stylesheet" href="styles/main.css">
@@ -47,104 +42,29 @@
 <div class="container">
 
     <!-- Template for select type item -->
-    <script type="text/template" id="title-list">
+    <script id="entry-template" type="text/x-handlebars-template">
         <div class="chooseFields">
-            <% for(var i = 0; i < items.length; i++) { %>
-                <div class="list-titles-item">
-                    <div class="inline-block">
-                        <%-items[i].title%>
-                    </div>
-
-                    <div class="inline-block">
-                        <select class="field-select" data-field="<%-items[i].id%>" data-title="<%-items[i].title%>">
-                            <option>Select your option</option>
-                            <%for(var j = 0; j < options.length; j++) { %>
-                                <option data-index="<%-j%>"><%-options[j]%></option>
-                            <% } %>
-                        </select>
-                    </div>
-
+            {{#each items}}
+            <div class="list-titles-item">
+                <div class="inline-block">
+                    {{title}}
                 </div>
-            <% } %>
+
+                <div class="inline-block">
+                    <select class="field-select" data-field="{{id}}" data-title="{{title}}">
+                        <option>Select your option</option>
+                        <%for(var j = 0; j < options.length; j++) { %>
+                        {{#each options}}
+                        <option>{{this}}</option>
+                        {{/each}}
+                    </select>
+                </div>
+
+            </div>
+            {{/each}}
 
             <button id="renderTable" class="btn btn-primary" type="button" >Render Table</button>
         </div>
-    </script>
-
-    <!-- Template for table -->
-    <script type="text/template" id="table-list">
-        <div data-component="table-custom">
-            <div class="table-custom__navigation">
-                <button class="btn btn-primary" data-table-custom="add-row" data-component="dialog" type="button">Add</button>
-                <button class="btn btn-primary" data-table-custom="submit" type="button">Submit</button>
-            </div>
-
-            <table id="customUserTableFromCSV" class="table" data-component="table-custom">
-                <thead>
-                    <tr>
-                        <%for(var i = 0; i < title.length; i++) { %>
-                            <th data-table-custom="<%-title[i].id%>"><%-title[i].title%></th>
-                        <% } %>
-                        <th>
-                            Edit/Remove
-                        </th>
-                    </tr>
-                </thead>
-
-                <tbody>
-                    <%for(var i = 0; i < data.length; i++) { %>
-                        <tr data-index="<%-i%>">
-                            <%for(var value in data[i]) { %>
-                                <%if(value === "index") continue;%>
-                                <td><%-data[i][value]%></td>
-                            <% } %>
-                            <td>
-                                <button class="btn btn-primary" data-table-custom="edit-row" data-component="dialog" type="button">Edit</button>
-                                <button class="btn btn-primary" data-table-custom="delete-row" type="button">Delete</button>
-                            </td>
-                        </tr>
-                    <% } %>
-                </tbody>
-            </table>
-        </div>
-
-    </script>
-
-    <!-- Template for table row -->
-    <script type="text/template" id="table-row">
-        <%for(var i = 0; i < data.length; i++) { %>
-        <tr data-index="<%-i%>">
-            <%for(var value in data[i]) { %>
-            <%if(value === "index") continue;%>
-            <td><%-data[i][value]%></td>
-            <% } %>
-            <td>
-                <button class="btn btn-primary" data-table-custom="edit-row" data-component="dialog" type="button">Edit</button>
-                <button class="btn btn-primary" data-table-custom="delete-row" type="button">Delete</button>
-            </td>
-        </tr>
-        <% } %>
-    </script>
-
-    <!-- Template for edit dialog row -->
-    <script type="text/template" id="dialog-edit-row">
-        <h3>Edit Row Data</h3>
-
-        <dl id="row-content">
-        <%for(var i = 0; i < data.length; i++) {%>
-            <%for(var value in data[i]) { %>
-                <dt><%-value%></dt>
-                <%if(index === "newString") {%>
-                <dd class="empty" contenteditable="true"></dd>
-                <%} else {%>
-                <dd contenteditable="true"><%-data[i][value]%></dd>
-                <% } %>
-                <br>
-            <% } %>
-        <% } %>
-        </dl>
-
-        <button data-index="<%-index%>" class="btn btn-primary" data-table-custom="update-row" type="button">Update</button>
     </script>
 
     <div data-component="userUploadCSVFile">

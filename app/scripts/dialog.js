@@ -48,7 +48,8 @@ class Dialog {
             '</div>' +
             '</div>'
         ;
-        var tpl = document.getElementById(self.options.templateId).innerHTML.trim();
+        //var tpl = document.getElementById(self.options.templateId).innerHTML.trim();
+        var tpl = '<h3>Edit Row Data</h3><dl id="row-content"><%for(var i = 0; i < data.length; i++) {%><%for(var value in data[i]) { %><dt><%-value%></dt><%if(index === "newString") {%><dd class="empty" contenteditable="true"></dd><%} else {%><dd contenteditable="true"><%-data[i][value]%></dd><% } %><br><% } %><% } %></dl><button data-index="<%-index%>" class="btn btn-primary" data-table-custom="update-row" type="button">Update</button>';
         var dialogContent = _.template(tpl);
         var data = customTbl.getDataRow(event.target);
         var index = event.target.closest("tr") ? event.target.closest("tr").dataset.index : "newString";
