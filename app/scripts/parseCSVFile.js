@@ -23,8 +23,7 @@ class addCSVList {
          * Event Listeners
          */
         this._btnFile.addEventListener('change', this._parseCSV.bind(this));
-        this._btnSubmit.addEventListener('click', this._submitData.bind(this));
-        this._btnRenderTable.addEventListener('click', this._renderTable.bind(this));
+        this._componentRoot.addEventListener('click', this._eventHandler.bind(this));
 
         /**
          * Config
@@ -71,20 +70,31 @@ class addCSVList {
         }.bind(this);
     }
 
+    /**
+     * Render List with standart fields
+     */
+
     _renderListFields(){
-        var self = this;
-        var tpl = document.getElementById("title-list").innerHTML.trim();
-        var titleList = _.template(tpl);
+        let self = this;
+        let theTemplateScript = document.getElementById("title-list-template").innerHTML.trim();
+        let theTemplate = Handlebars.compile(theTemplateScript);
+        let theCompiledHtml = theTemplate( {data: self._typeFields, options: self._inputData[0]} );
 
         this._componentRoot
-            .insertAdjacentHTML('beforeEnd', titleList({items: self._typeFields, options: self._inputData[0]}));
+            .insertAdjacentHTML('beforeEnd', theCompiledHtml);
+    }
+    _eventHandler(event) {
+        if(event.target.id === "renderTable") {
+            this._renderTable(event);
+        }
     }
     /**
      * Render table with data from csv file
      */
     _renderTable(event){
         var self = this;
-        var tpl = document.getElementById("table-list").innerHTML.trim();
+        //var tpl = document.getElementById("table-list").innerHTML.trim();
+        var tpl = '<div data-component="table-custom"><div class="table-custom__navigation"><button class="btn btn-primary" data-table-custom="add-row" data-component="dialog" type="button">Add</button><button class="btn btn-primary" data-table-custom="submit" type="button">Submit</button></div><table id="customUserTableFromCSV" class="table" data-component="table-custom"><thead><tr><%for(var i = 0; i < title.length; i++) { %><th data-table-custom="<%-title[i].id%>"><%-title[i].title%></th><% } %><th>Edit/Remove</th></tr></thead><tbody><%for(var i = 0; i < data.length; i++) { %><tr data-index="<%-i%>"><%for(var value in data[i]) { %><%if(value === "index") continue;%><td><%-data[i][value]%></td><% } %><td><button class="btn btn-primary" data-table-custom="edit-row" data-component="dialog" type="button">Edit</button><button class="btn btn-primary" data-table-custom="delete-row" type="button">Delete</button></td></tr><% } %></tbody></table></div>';
         var tableList = _.template(tpl);
 
 
@@ -101,6 +111,11 @@ class addCSVList {
         self._componentRoot
             .insertAdjacentHTML("beforeEnd", tableList({title: self._userDataStyle, data: self._correctData}));
 
+        window.customTbl = new TableCustom({
+            url: "/server.js"
+        });
+
+        this._componentRoot.removeChild(this._componentRoot.querySelector(".chooseFields"));
     }
 
     _updateData(){
@@ -154,27 +169,5 @@ class addCSVList {
                 this._correctData.push(item);
             }
         }
-        console.log(this._correctData);
-    }
-
-    /**
-     * Submit data to server
-     */
-    _submitData(event) {
-        let xhr = new XMLHttpRequest();
-        let data = {data: JSON.stringify(this._correctData)};
-
-        xhr.open("POST", this._config.url, true);
-
-        xhr.setRequestHeader('Content-type', 'application/json; charset=utf-8');
-
-        // ajax handler
-        xhr.onreadystatechange = function() {
-            if (this.readyState != 4) return;
-
-            alert( this.responseText );
-        };
-
-        xhr.send(data);
     }
 }
