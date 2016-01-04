@@ -27,8 +27,10 @@ class Dialog {
             this.render();
         }
 
-        if(event.target.getAttribute("data-dialog") === "close") {
-            this.destruct();
+        if(event.target.closest("button")) {
+            if(event.target.closest("button").getAttribute("data-dialog") === "close") {
+                this.destruct();
+            }
         }
     }
 
@@ -56,10 +58,12 @@ class Dialog {
             .insertAdjacentHTML("beforeEnd", dialog);
 
         document.querySelector(".dialog__content")
-            .insertAdjacentHTML("beforeEnd", dialogContent({data: data}));
+            .insertAdjacentHTML("beforeEnd", dialogContent({data: data, index: event.target.closest("tr").dataset.index}));
     }
 
     destruct() {
+        document.body.classList.remove("has-dialog");
+        document
         console.log("destruct");
     }
 }
