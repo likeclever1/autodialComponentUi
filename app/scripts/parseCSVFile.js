@@ -93,9 +93,9 @@ class addCSVList {
      */
     _renderTable(event){
         var self = this;
-        var tpl = document.getElementById("table-list").innerHTML.trim();
-        var tableList = _.template(tpl);
-
+        var tpl = document.getElementById("table-custom-template").innerHTML.trim();
+        var tableList = Handlebars.compile(tpl);
+        var data = [];
 
         this._updateData();
 
@@ -107,10 +107,18 @@ class addCSVList {
             ;
         }
 
-        console.log(this._correctData);
+        // prepare data to view
+        for(var i = 0; i < self._correctData.length - 1; i++) {
+            var item = [];
+            for(var j = 0; j < self._userDataStyle.length; j++) {
+                if(self._correctData[i][self._userDataStyle[j].id] === "index") continue;
+                    item.push(self._correctData[ i ][ self._userDataStyle[j].id ]);
+            }
+            data.push(item);
+        }
 
         self._componentRoot
-            .insertAdjacentHTML("beforeEnd", tableList({title: self._userDataStyle, data: self._correctData}));
+            .insertAdjacentHTML("beforeEnd", tableList({title: self._userDataStyle, data: data}));
 
         window.customTbl = new TableCustom({
             url: "/server.js"

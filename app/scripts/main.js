@@ -18,7 +18,7 @@ let inst = new addCSVList({
             "title": "Почтовый адресс"
         },
         {
-            "id": "postIndex",
+            "id": "homeIndex",
             "title": "Индекс"
         },
         {
