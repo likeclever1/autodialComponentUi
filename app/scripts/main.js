@@ -1,5 +1,6 @@
 "use strict";
-let inst = new addCSVList({
+let inst = new uploadData({
+    "url": "server.js",
     "componentRoot": document.querySelector("[data-component='userUploadCSVFile']"),
     "btnFile": document.getElementById("uploadFile"),
     "btnRenderTable": document.getElementById("renderTable"),
@@ -18,10 +19,6 @@ let inst = new addCSVList({
             "title": "Почтовый адресс"
         },
         {
-            "id": "homeIndex",
-            "title": "Индекс"
-        },
-        {
             "id": "phoneNumber",
             "title": "Номер Телефона"
         }
@@ -34,4 +31,6 @@ let dialog = new Dialog(
         "templateId": "dialog-edit-row"
     }
 );
+
+
 
